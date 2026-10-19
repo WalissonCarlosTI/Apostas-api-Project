@@ -1,0 +1,11 @@
+### Listar partidas
+GET http://localhost:3000/api/matches
+
+### Login admin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "walisson@teste.com",
+  "password": "123456Wc"
+}
