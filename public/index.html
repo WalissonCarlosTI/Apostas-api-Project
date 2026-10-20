@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apostas SaaS</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, Segoe UI, Roboto, sans-serif;
+        background: #0f1419;
+        color: #e6edf3;
+      }
+      header {
+        background: #161b22;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #30363d;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      header h1 {
+        font-size: 20px;
+        margin: 0;
+        color: #3fb950;
+      }
+      nav {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      nav button {
+        background: none;
+        border: none;
+        color: #8b949e;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        border-bottom: 2px solid transparent;
+      }
+      nav button.active {
+        color: #fff;
+        border-bottom-color: #3fb950;
+      }
+      .userbox {
+        font-size: 13px;
+        color: #8b949e;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 20px;
+      }
+      @media (max-width: 800px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .card h2,
+      .card h3 {
+        margin: 0 0 12px;
+        font-size: 17px;
+      }
+      input,
+      select {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        color: #e6edf3;
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 14px;
+        width: 100%;
+      }
+      label {
+        font-size: 12px;
+        color: #8b949e;
+        display: block;
+        margin: 8px 0 4px;
+      }
+      button.primary {
+        background: #238636;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 14px;
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+      }
+      button.primary:hover {
+        background: #2ea043;
+      }
+      button.ghost {
+        background: #21262d;
+        color: #e6edf3;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      button.ghost:hover {
+        background: #30363d;
+      }
+      button.danger {
+        background: #da3633;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .match {
+        border-bottom: 1px solid #30363d;
+        padding: 14px 0;
+      }
+      .match:last-child {
+        border-bottom: none;
+      }
+      .match-head {
+        font-size: 12px;
+        color: #8b949e;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .teams {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+      .odds {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .odd {
+        background: #21262d;
+        border: 1px solid #30363d;
+        color: #e6edf3;
+        border-radius: 6px;
+        padding: 8px;
+        cursor: pointer;
+        text-align: center;
+      }
+      .odd:hover {
+        border-color: #3fb950;
+      }
+      .odd.sel {
+        background: #238636;
+        border-color: #238636;
+      }
+      .odd span {
+        display: block;
+        font-size: 11px;
+        color: #8b949e;
+      }
+      .odd.sel span {
+        color: #d2f8d9;
+      }
+      .odd b {
+        font-size: 16px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 14px;
+        padding: 6px 0;
+        border-bottom: 1px solid #21262d;
+      }
+      .muted {
+        color: #8b949e;
+        font-size: 13px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        background: #30363d;
+      }
+      .won {
+        background: #238636;
+      }
+      .lost {
+        background: #da3633;
+      }
+      .open {
+        background: #1f6feb;
+      }
+      .void {
+        background: #6e7681;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #30363d;
+        vertical-align: top;
+      }
+      th {
+        color: #8b949e;
+        font-weight: 500;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+        margin: 0;
+        font-size: 11px;
+        color: #8b949e;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+      .inline {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .inline input {
+        width: auto;
+        flex: 1;
+      }
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: #fff;
+        display: none;
+        max-width: 360px;
+        z-index: 99;
+      }
+      .auth {
+        max-width: 380px;
+        margin: 60px auto;
+        padding: 0 20px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand svg {
+        width: 28px;
+        height: 28px;
+      }
+      .brand small {
+        display: block;
+        font-size: 11px;
+        color: #8b949e;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+      }
+      header h1 {
+        font-size: 18px;
+        letter-spacing: 0.2px;
+      }
+      .card {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s;
+      }
+      .card:hover {
+        border-color: #484f58;
+      }
+      .odd {
+        transition: transform 0.08s, border-color 0.2s, background 0.2s;
+      }
+      .odd:active {
+        transform: scale(0.97);
+      }
+      .odd:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .odd:disabled:hover {
+        border-color: #30363d;
+      }
+      .badge {
+        font-weight: 600;
+        color: #fff;
+        text-transform: capitalize;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .chip {
+        background: #21262d;
+        border: 1px solid #30363d;
+        color: #c9d1d9;
+        border-radius: 16px;
+        padding: 4px 12px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .chip:hover {
+        border-color: #3fb950;
+        color: #fff;
+      }
+      .quick {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .quick button {
+        flex: 1;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+      tr:hover td {
+        background: #1c2128;
+      }
+      nav button:hover {
+        color: #e6edf3;
+      }
+      footer {
+        text-align: center;
+        color: #6e7681;
+        font-size: 12px;
+        padding: 24px 20px;
+        border-top: 1px solid #30363d;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#238636" />
+          <circle
+            cx="16"
+            cy="16"
+            r="8"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2"
+          />
+          <path d="M16 8v16M8 16h16" stroke="#fff" stroke-width="1.5" />
+        </svg>
+        <h1>Apostas SaaS<small>Plataforma de apostas esportivas</small></h1>
+      </div>
+      <nav id="nav"></nav>
+      <div class="userbox" id="userbox"></div>
+    </header>
+    <main>
+      <section id="content"></section>
+      <aside id="side"></aside>
+    </main>
+    <div id="toast"></div>
+    <footer>
+      Apostas SaaS © 2026 · Aposte com responsabilidade. Proibido para menores
+      de 18 anos.
+    </footer>
+
+    <script>
+      const S = {
+        token: localStorage.getItem("token"),
+        me: null,
+        tab: "matches",
+        adminTab: "partidas",
+        search: "",
+        matches: [],
+        teams: [],
+        slip: [], // { matchId, home, away, selection, price }
+        authMode: "login",
+      };
+
+      // ---------- utilidades ----------
+      async function api(path, opts = {}) {
+        const headers = { "Content-Type": "application/json" };
+        if (S.token) headers.Authorization = "Bearer " + S.token;
+        const r = await fetch(path, {
+          method: opts.method || "GET",
+          headers,
+          body: opts.body ? JSON.stringify(opts.body) : undefined,
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          if (r.status === 401 && S.token) logout(false);
+          throw new Error(data.error || "Erro na requisição");
+        }
+        return data;
+      }
+      function esc(s) {
+        return String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[c])
+        );
+      }
+      function brl(cents) {
+        return (Number(cents) / 100).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
+      function fmtDate(iso) {
+        return new Date(iso).toLocaleString("pt-BR", {
+          dateStyle: "short",
+          timeStyle: "short",
+        });
+      }
+      function toast(msg, ok = true) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.style.background = ok ? "#238636" : "#da3633";
+        t.style.display = "block";
+        clearTimeout(t._h);
+        t._h = setTimeout(() => (t.style.display = "none"), 3500);
+      }
+      function parseReais(v) {
+        const n = parseFloat(String(v).replace(",", "."));
+        return Number.isFinite(n) ? Math.round(n * 100) : NaN;
+      }
+      const SEL_LABEL = { home: "Casa", draw: "Empate", away: "Fora" };
+
+      // ---------- sessão ----------
+      async function loadMe() {
+        if (!S.token) return;
+        try {
+          S.me = await api("/api/me");
+        } catch {
+          S.token = null;
+          localStorage.removeItem("token");
+        }
+      }
+      function logout(notify = true) {
+        S.token = null;
+        S.me = null;
+        S.slip = [];
+        localStorage.removeItem("token");
+        S.tab = "matches";
+        if (notify) toast("Você saiu da conta");
+        render();
+      }
+
+      // ---------- render principal ----------
+      function render() {
+        renderHeader();
+        if (!S.me) {
+          document.getElementById("side").innerHTML = "";
+          document.getElementById("content").innerHTML = authView();
+          document.querySelector("main").style.gridTemplateColumns = "1fr";
+          return;
+        }
+        document.querySelector("main").style.gridTemplateColumns = "";
+        const views = {
+          matches: viewMatches,
+          mybets: viewMyBets,
+          wallet: viewWallet,
+          admin: viewAdmin,
+        };
+        (views[S.tab] || viewMatches)();
+        renderSlip();
+      }
+
+      function renderHeader() {
+        const nav = document.getElementById("nav");
+        const ub = document.getElementById("userbox");
+        if (!S.me) {
+          nav.innerHTML = "";
+          ub.innerHTML = "";
+          return;
+        }
+        const tabs = [
+          ["matches", "Partidas"],
+          ["mybets", "Minhas apostas"],
+          ["wallet", "Carteira"],
+        ];
+        if (S.me.role === "admin") tabs.push(["admin", "Admin"]);
+        nav.innerHTML = tabs
+          .map(
+            ([k, l]) =>
+              `<button class="${
+                S.tab === k ? "active" : ""
+              }" onclick="go('${k}')">${l}</button>`
+          )
+          .join("");
+        ub.innerHTML = `<span>${esc(S.me.name)} · ${brl(
+          S.me.balance_cents
+        )}</span>
+    <button class="ghost" onclick="logout()">Sair</button>`;
+      }
+
+      function go(tab) {
+        S.tab = tab;
+        render();
+      }
+
+      // ---------- autenticação ----------
+      function authView() {
+        const isLogin = S.authMode === "login";
+        return `
+  <div class="auth">
+    <div class="card">
+      <h2>${isLogin ? "Entrar" : "Criar conta"}</h2>
+      <form onsubmit="${isLogin ? "doLogin" : "doRegister"}(event)">
+        ${isLogin ? "" : `<label>Nome</label><input name="name" required>`}
+        <label>E-mail</label><input name="email" type="email" required>
+        <label>Senha</label><input name="password" type="password" minlength="${
+          isLogin ? 1 : 8
+        }" required>
+        <div style="margin-top:14px"><button class="primary" type="submit">${
+          isLogin ? "Entrar" : "Cadastrar"
+        }</button></div>
+      </form>
+      <p class="muted" style="text-align:center;margin-top:14px">
+        ${isLogin ? "Não tem conta?" : "Já tem conta?"}
+        <a href="#" onclick="toggleAuth(event)" style="color:#3fb950">${
+          isLogin ? "Cadastre-se" : "Entre"
+        }</a>
+      </p>
+    </div>
+  </div>`;
+      }
+      function toggleAuth(e) {
+        e.preventDefault();
+        S.authMode = S.authMode === "login" ? "register" : "login";
+        render();
+      }
+      async function doLogin(e) {
+        e.preventDefault();
+        const f = e.target;
+        try {
+          const d = await api("/api/auth/login", {
+            method: "POST",
+            body: { email: f.email.value, password: f.password.value },
+          });
+          S.token = d.token;
+          localStorage.setItem("token", d.token);
+          await loadMe();
+          toast("Bem-vindo, " + S.me.name + "!");
+          S.tab = "matches";
+          render();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+      async function doRegister(e) {
+        e.preventDefault();
+        const f = e.target;
+        try {
+          const d = await api("/api/auth/register", {
+            method: "POST",
+            body: {
+              name: f.name.value,
+              email: f.email.value,
+              password: f.password.value,
+            },
+          });
+          S.token = d.token;
+          localStorage.setItem("token", d.token);
+          await loadMe();
+          toast("Conta criada!");
+          render();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      // ---------- partidas ----------
+      async function viewMatches() {
+        const content = document.getElementById("content");
+        content.innerHTML = `
+    <div class="card">
+      <h2>Partidas e odds</h2>
+      <div class="inline">
+        <input id="search" placeholder="Buscar time (ex: Flamengo)" value="${esc(
+          S.search
+        )}">
+        <button class="ghost" onclick="searchMatches()">Buscar</button>
+      </div>
+      <div class="chips" id="teamChips"></div>
+    </div>
+    <div class="card" id="matchList"><p class="muted">Carregando...</p></div>`;
+        document.getElementById("search").addEventListener("keydown", (e) => {
+          if (e.key === "Enter") searchMatches();
+        });
+        try {
+          S.matches = await api(
+            "/api/matches?q=" + encodeURIComponent(S.search)
+          );
+          renderMatchList();
+          loadChips();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+      async function loadChips() {
+        const el = document.getElementById("teamChips");
+        if (!el) return;
+        try {
+          const teams = await api("/api/teams");
+          el.innerHTML = teams
+            .slice(0, 20)
+            .map(
+              (t) =>
+                `<button class="chip" onclick="pickTeam('${encodeURIComponent(
+                  t.name
+                )}')">${esc(t.name)}</button>`
+            )
+            .join("");
+        } catch {
+          /* chips são opcionais */
+        }
+      }
+      function pickTeam(encoded) {
+        document.getElementById("search").value = decodeURIComponent(encoded);
+        searchMatches();
+      }
+      function searchMatches() {
+        S.search = document.getElementById("search").value.trim();
+        viewMatches();
+      }
+      function renderMatchList() {
+        const el = document.getElementById("matchList");
+        if (!S.matches.length) {
+          el.innerHTML = '<p class="muted">Nenhuma partida encontrada.</p>';
+          return;
+        }
+        el.innerHTML = S.matches
+          .map((m) => {
+            const o = Object.fromEntries(
+              (m.odds || []).map((x) => [x.selection, x.price])
+            );
+            const finished = m.status === "finished";
+            const btn = (sel) => {
+              const picked = S.slip.some(
+                (s) => s.matchId === m.id && s.selection === sel
+              );
+              return `<button class="odd ${picked ? "sel" : ""}" ${
+                finished ? "disabled" : ""
+              }
+        onclick="addSel(${m.id}, '${sel}')"><span>${SEL_LABEL[sel]}</span><b>${
+                o[sel] ? o[sel].toFixed(2) : "-"
+              }</b></button>`;
+            };
+            return `<div class="match">
+      <div class="match-head">
+        <span>${fmtDate(m.starts_at)}</span>
+        <span class="badge ${finished ? "void" : "open"}">${
+              finished ? `Encerrada ${m.home_score}x${m.away_score}` : "Aberta"
+            }</span>
+      </div>
+      <div class="teams">${esc(m.home)} x ${esc(m.away)}</div>
+      <div class="odds">${btn("home")}${btn("draw")}${btn("away")}</div>
+    </div>`;
+          })
+          .join("");
+      }
+      function addSel(matchId, selection) {
+        if (!S.me) return toast("Entre na sua conta para apostar", false);
+        const m = S.matches.find((x) => x.id === matchId);
+        const price = Number(
+          (m.odds || []).find((x) => x.selection === selection)?.price
+        );
+        const idx = S.slip.findIndex((s) => s.matchId === matchId);
+        if (idx >= 0 && S.slip[idx].selection === selection) {
+          S.slip.splice(idx, 1); // clicar de novo remove
+        } else {
+          const item = {
+            matchId,
+            home: m.home,
+            away: m.away,
+            selection,
+            price,
+          };
+          if (idx >= 0) S.slip[idx] = item; // uma seleção por partida
+          else {
+            if (S.slip.length >= 20)
+              return toast("Máximo de 20 seleções no bilhete", false);
+            S.slip.push(item);
+          }
+        }
+        renderMatchList();
+        renderSlip();
+      }
+
+      // ---------- bilhete ----------
+      function renderSlip() {
+        const side = document.getElementById("side");
+        if (!S.me) {
+          side.innerHTML = "";
+          return;
+        }
+        if (S.tab !== "matches") {
+          side.innerHTML = "";
+          return;
+        }
+        const odd = S.slip.reduce((a, s) => a * s.price, 1);
+        side.innerHTML = `
+    <div class="card">
+      <h3>Bilhete (${S.slip.length})</h3>
+      ${
+        S.slip.length === 0
+          ? '<p class="muted">Clique em uma odd para adicionar.</p>'
+          : S.slip
+              .map(
+                (s) => `<div class="row">
+          <span>${esc(s.home)} x ${esc(s.away)}<br><span class="muted">${
+                  SEL_LABEL[s.selection]
+                } @ ${s.price.toFixed(2)}</span></span>
+          <button class="ghost" onclick="addSel(${s.matchId},'${
+                  s.selection
+                }')">✕</button>
+        </div>`
+              )
+              .join("")
+      }
+      ${
+        S.slip.length
+          ? `
+        <div class="row"><span>Odd total</span><b>${odd.toFixed(2)}</b></div>
+        <label>Valor da aposta (R$)</label>
+        <input id="stake" placeholder="10,00" oninput="updatePotential()">
+        <div class="quick">${[10, 25, 50, 100]
+          .map(
+            (v) =>
+              `<button class="ghost" onclick="quickStake(${v})">R$ ${v}</button>`
+          )
+          .join("")}</div>
+        <p class="muted" style="margin-top:6px">Mín. R$ 1,00 · Máx. R$ 10.000,00</p>
+        <p class="muted">Ganho potencial: <b id="potential">R$ 0,00</b></p>
+        <div style="margin-top:10px"><button class="primary" onclick="placeBet()">Apostar</button></div>
+        <div style="margin-top:6px"><button class="ghost" style="width:100%" onclick="S.slip=[];renderMatchList();renderSlip()">Limpar</button></div>
+      `
+          : ""
+      }
+    </div>`;
+        updatePotential();
+      }
+      function updatePotential() {
+        const el = document.getElementById("potential");
+        if (!el) return;
+        const stake = parseReais(document.getElementById("stake")?.value ?? "");
+        const odd = S.slip.reduce((a, s) => a * s.price, 1);
+        el.textContent =
+          Number.isFinite(stake) && stake > 0
+            ? brl(Math.floor(stake * odd))
+            : "R$ 0,00";
+      }
+      function quickStake(v) {
+        const el = document.getElementById("stake");
+        el.value = String(v).replace(".", ",");
+        updatePotential();
+      }
+      async function placeBet() {
+        const stakeCents = parseReais(document.getElementById("stake").value);
+        if (!Number.isInteger(stakeCents))
+          return toast("Informe um valor válido", false);
+        try {
+          await api("/api/bets", {
+            method: "POST",
+            body: {
+              stakeCents,
+              selections: S.slip.map((s) => ({
+                matchId: s.matchId,
+                selection: s.selection,
+              })),
+            },
+          });
+          S.slip = [];
+          toast("Aposta realizada!");
+          await loadMe();
+          render();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      // ---------- minhas apostas ----------
+      async function viewMyBets() {
+        const content = document.getElementById("content");
+        content.innerHTML = `<div class="card"><h2>Minhas apostas</h2><div id="bets"><p class="muted">Carregando...</p></div></div>`;
+        try {
+          const bets = await api("/api/bets");
+          document.getElementById("bets").innerHTML = bets.length
+            ? `
+      <table>
+        <tr><th>#</th><th>Data</th><th>Valor</th><th>Odd</th><th>Ganho potencial</th><th>Status</th><th>Pago</th></tr>
+        ${bets
+          .map(
+            (b) => `<tr>
+          <td>${b.id}</td><td>${fmtDate(b.created_at)}</td><td>${brl(
+              b.stake_cents
+            )}</td>
+          <td>${Number(b.total_odds).toFixed(2)}</td><td>${brl(
+              b.potential_cents
+            )}</td>
+          <td><span class="badge ${b.status}">${b.status}</span></td><td>${brl(
+              b.payout_cents
+            )}</td>
+        </tr>`
+          )
+          .join("")}
+      </table>`
+            : '<p class="muted">Você ainda não fez apostas.</p>';
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      // ---------- carteira ----------
+      async function viewWallet() {
+        const content = document.getElementById("content");
+        content.innerHTML = `
+    <div class="card"><h2>Carteira</h2><p>Saldo atual: <b style="font-size:20px">${brl(
+      S.me.balance_cents
+    )}</b></p></div>
+    <div class="card"><h3>Extrato</h3><div id="ledger"><p class="muted">Carregando...</p></div></div>`;
+        try {
+          const rows = await api("/api/wallet");
+          document.getElementById("ledger").innerHTML = rows.length
+            ? `
+      <table>
+        <tr><th>Data</th><th>Tipo</th><th>Valor</th><th>Saldo após</th></tr>
+        ${rows
+          .map(
+            (r) => `<tr>
+          <td>${fmtDate(r.created_at)}</td><td>${esc(r.type)}</td>
+          <td style="color:${
+            r.amount_cents >= 0 ? "#3fb950" : "#f85149"
+          }">${brl(r.amount_cents)}</td>
+          <td>${brl(r.balance_after_cents)}</td></tr>`
+          )
+          .join("")}
+      </table>`
+            : '<p class="muted">Sem movimentações.</p>';
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      // ---------- admin ----------
+      function viewAdmin() {
+        if (S.me.role !== "admin") return go("matches");
+        const tabs = [
+          ["partidas", "Partidas"],
+          ["times", "Times"],
+          ["usuarios", "Usuários"],
+          ["auditoria", "Auditoria"],
+        ];
+        document.getElementById("content").innerHTML = `
+    <div class="card">
+      <nav>${tabs
+        .map(
+          ([k, l]) =>
+            `<button class="${
+              S.adminTab === k ? "active" : ""
+            }" onclick="S.adminTab='${k}';viewAdmin()">${l}</button>`
+        )
+        .join("")}</nav>
+    </div>
+    <div id="adminBody"></div>`;
+        const map = {
+          partidas: adminMatches,
+          times: adminTeams,
+          usuarios: adminUsers,
+          auditoria: adminAudit,
+        };
+        map[S.adminTab]();
+      }
+
+      async function adminTeams() {
+        const body = document.getElementById("adminBody");
+        body.innerHTML = `
+    <div class="card"><h3>Novo time</h3>
+      <div class="inline">
+        <input id="tName" placeholder="Nome do time">
+        <input id="tSport" placeholder="Esporte" value="futebol" style="max-width:160px">
+        <button class="primary" style="width:auto" onclick="createTeam()">Criar</button>
+      </div>
+    </div>
+    <div class="card"><h3>Times cadastrados</h3><div id="teamList"></div></div>`;
+        loadTeams();
+      }
+      async function loadTeams() {
+        S.teams = await api("/api/teams");
+        const el = document.getElementById("teamList");
+        if (el)
+          el.innerHTML = S.teams.length
+            ? S.teams
+                .map(
+                  (t) =>
+                    `<div class="row"><span>${esc(
+                      t.name
+                    )}</span><span class="muted">${esc(t.sport)}</span></div>`
+                )
+                .join("")
+            : '<p class="muted">Nenhum time.</p>';
+      }
+      async function createTeam() {
+        const name = document.getElementById("tName").value.trim();
+        const sport =
+          document.getElementById("tSport").value.trim() || "futebol";
+        try {
+          await api("/api/admin/teams", {
+            method: "POST",
+            body: { name, sport },
+          });
+          toast("Time criado");
+          adminTeams();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      async function adminMatches() {
+        S.teams = await api("/api/teams");
+        const matches = await api("/api/matches");
+        const opts = S.teams
+          .map((t) => `<option value="${t.id}">${esc(t.name)}</option>`)
+          .join("");
+        const body = document.getElementById("adminBody");
+        body.innerHTML = `
+    <div class="card"><h3>Nova partida</h3>
+      ${
+        S.teams.length < 2
+          ? '<p class="muted">Cadastre pelo menos 2 times na aba Times.</p>'
+          : `
+      <div class="grid2">
+        <div><label>Mandante</label><select id="mHome">${opts}</select></div>
+        <div><label>Visitante</label><select id="mAway">${opts}</select></div>
+      </div>
+      <label>Data e hora</label><input id="mDate" type="datetime-local">
+      <label>Odds (Casa / Empate / Fora)</label>
+      <div class="grid3">
+        <input id="mOh" placeholder="2.10"><input id="mOd" placeholder="3.20"><input id="mOa" placeholder="3.40">
+      </div>
+      <div style="margin-top:12px"><button class="primary" onclick="createMatch()">Criar partida</button></div>`
+      }
+    </div>
+    <div class="card"><h3>Partidas</h3><div id="adminMatchList"></div></div>`;
+        const el = document.getElementById("adminMatchList");
+        el.innerHTML = matches.length
+          ? matches
+              .map((m) => {
+                const o = Object.fromEntries(
+                  (m.odds || []).map((x) => [x.selection, x.price])
+                );
+                const scheduled = m.status === "scheduled";
+                return `<div class="match">
+      <div class="match-head"><span>${fmtDate(m.starts_at)}</span>
+        <span class="badge ${scheduled ? "open" : "void"}">${m.status}${
+                  m.status === "finished"
+                    ? ` ${m.home_score}x${m.away_score}`
+                    : ""
+                }</span></div>
+      <div class="teams">${esc(m.home)} x ${esc(m.away)}</div>
+      ${
+        scheduled
+          ? `
+        <label>Odds atuais: ${o.home} / ${o.draw} / ${o.away}</label>
+        <div class="grid3">
+          <input id="oh${m.id}" placeholder="Casa" value="${o.home}">
+          <input id="od${m.id}" placeholder="Empate" value="${o.draw}">
+          <input id="oa${m.id}" placeholder="Fora" value="${o.away}">
+        </div>
+        <div class="inline" style="margin-top:8px">
+          <button class="ghost" onclick="updateOdds(${m.id})">Salvar odds</button>
+          <input id="hs${m.id}" placeholder="Gols casa" style="max-width:110px">
+          <input id="as${m.id}" placeholder="Gols fora" style="max-width:110px">
+          <button class="primary" style="width:auto" onclick="setResult(${m.id})">Definir resultado</button>
+          <button class="danger" onclick="voidMatch(${m.id})">Cancelar</button>
+        </div>`
+          : ""
+      }
+    </div>`;
+              })
+              .join("")
+          : '<p class="muted">Nenhuma partida.</p>';
+      }
+      async function createMatch() {
+        const dateVal = document.getElementById("mDate").value;
+        const body = {
+          homeTeamId: Number(document.getElementById("mHome").value),
+          awayTeamId: Number(document.getElementById("mAway").value),
+          startsAt: dateVal ? new Date(dateVal).toISOString() : "",
+          odds: {
+            home: parseFloat(
+              document.getElementById("mOh").value.replace(",", ".")
+            ),
+            draw: parseFloat(
+              document.getElementById("mOd").value.replace(",", ".")
+            ),
+            away: parseFloat(
+              document.getElementById("mOa").value.replace(",", ".")
+            ),
+          },
+        };
+        try {
+          await api("/api/admin/matches", { method: "POST", body });
+          toast("Partida criada");
+          adminMatches();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+      async function updateOdds(id) {
+        const body = {
+          home: parseFloat(
+            document.getElementById("oh" + id).value.replace(",", ".")
+          ),
+          draw: parseFloat(
+            document.getElementById("od" + id).value.replace(",", ".")
+          ),
+          away: parseFloat(
+            document.getElementById("oa" + id).value.replace(",", ".")
+          ),
+        };
+        try {
+          await api(`/api/admin/matches/${id}/odds`, { method: "PATCH", body });
+          toast("Odds atualizadas");
+          adminMatches();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+      async function setResult(id) {
+        const homeScore = Number(document.getElementById("hs" + id).value);
+        const awayScore = Number(document.getElementById("as" + id).value);
+        if (
+          !confirm(
+            `Definir resultado ${homeScore} x ${awayScore}? Isso liquida as apostas.`
+          )
+        )
+          return;
+        try {
+          await api(`/api/admin/matches/${id}/result`, {
+            method: "POST",
+            body: { homeScore, awayScore },
+          });
+          toast("Resultado registrado e apostas liquidadas");
+          adminMatches();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+      async function voidMatch(id) {
+        if (!confirm("Cancelar esta partida? As seleções serão anuladas."))
+          return;
+        try {
+          await api(`/api/admin/matches/${id}/void`, { method: "POST" });
+          toast("Partida cancelada");
+          adminMatches();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      async function adminUsers() {
+        const users = await api("/api/admin/users");
+        document.getElementById("adminBody").innerHTML = `
+    <div class="card"><h3>Usuários</h3>
+      <table>
+        <tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Papel</th><th>Saldo</th><th>Status</th><th>Ações</th></tr>
+        ${users
+          .map(
+            (u) => `<tr>
+          <td>${u.id}</td><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${
+              u.role
+            }</td>
+          <td>${brl(u.balance_cents)}</td>
+          <td>${
+            u.active ? "Ativo" : '<span class="badge lost">Bloqueado</span>'
+          }</td>
+          <td>
+            <button class="ghost" onclick="depositTo(${
+              u.id
+            })">Depositar</button>
+            <button class="ghost" onclick="toggleUser(${u.id}, ${
+              u.active ? 0 : 1
+            })">${u.active ? "Bloquear" : "Desbloquear"}</button>
+          </td>
+        </tr>`
+          )
+          .join("")}
+      </table>
+    </div>`;
+      }
+      async function depositTo(id) {
+        const v = prompt("Valor do depósito em reais (ex: 50,00):");
+        if (v === null) return;
+        const amountCents = parseReais(v);
+        if (!Number.isInteger(amountCents) || amountCents <= 0)
+          return toast("Valor inválido", false);
+        try {
+          await api(`/api/admin/users/${id}/deposit`, {
+            method: "POST",
+            body: { amountCents },
+          });
+          toast("Depósito realizado");
+          adminUsers();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+      async function toggleUser(id, active) {
+        try {
+          await api(`/api/admin/users/${id}/active`, {
+            method: "PATCH",
+            body: { active },
+          });
+          toast("Status atualizado");
+          adminUsers();
+        } catch (err) {
+          toast(err.message, false);
+        }
+      }
+
+      async function adminAudit() {
+        const logs = await api("/api/admin/audit");
+        document.getElementById("adminBody").innerHTML = `
+    <div class="card"><h3>Auditoria (últimos 500 registros)</h3>
+      <table>
+        <tr><th>Data</th><th>Ator</th><th>Ação</th><th>Entidade</th><th>Dados</th></tr>
+        ${logs
+          .map(
+            (l) => `<tr>
+          <td>${fmtDate(l.created_at)}</td><td>${
+              l.actor_id ?? "-"
+            }</td><td>${esc(l.action)}</td>
+          <td>${esc(l.entity)} ${esc(l.entity_id ?? "")}</td><td><pre>${esc(
+              l.data ?? ""
+            )}</pre></td>
+        </tr>`
+          )
+          .join("")}
+      </table>
+    </div>`;
+      }
+
+      // ---------- inicialização ----------
+      (async function init() {
+        await loadMe();
+        render();
+      })();
+    </script>
+  </body>
+</html>
